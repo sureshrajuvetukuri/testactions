@@ -70,8 +70,17 @@ jobs:
       run: |
         mkdir -p $HOME/.kube
         echo "${{ secrets.KUBE_CONFIG_DATA }}" | base64 --decode > $HOME/.kube/config
+        echo "Kubeconfig file content:"
+        cat $HOME/.kube/config
 
-    # Step 4: Apply Kubernetes Deployment (Forcefully)
+    # Step 4: Check Kubernetes API Server Connectivity with Detailed Logging
+    - name: Check Kubernetes API Server Connectivity
+      run: |
+        echo "Checking Kubernetes API server connectivity..."
+        kubectl cluster-info
+        kubectl version --request-timeout=60s
+
+    # Step 5: Apply Kubernetes Deployment (Forcefully)
     - name: Forcefully Deploy to Kubernetes
       run: |
         kubectl delete -f k8s-deployment.yaml --ignore-not-found --grace-period=0 --force

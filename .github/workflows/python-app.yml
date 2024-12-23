@@ -33,7 +33,7 @@ jobs:
 
     # Step 4: Run tests
     - name: Run tests
-      run: pytest src/tests
+      run: pytest
 
     # Step 5: Log in to Docker Hub
     - name: Log in to Docker Hub
@@ -65,11 +65,7 @@ jobs:
       with:
         version: 'latest'
 
-   
-        
-        
-        
-        # Step 3: Deploy to Kubernetes
+    # Step 3: Deploy to Kubernetes
     - name: Deploy to Kubernetes
       env:
         KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}

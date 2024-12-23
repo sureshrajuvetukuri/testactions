@@ -65,11 +65,16 @@ jobs:
       with:
         version: 'latest'
 
-    # Step 3: Deploy to Kubernetes
-    - name: Deploy to Kubernetes
-      env:
-        KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
+    # Step 3: Create .kube Directory and Decode Kubeconfig
+    - name: Create .kube Directory and Decode Kubeconfig
       run: |
         mkdir -p $HOME/.kube
         echo "${{ secrets.KUBE_CONFIG_DATA }}" | base64 --decode > $HOME/.kube/config
-        kubectl apply -f k8s-deployment.yaml --validate=false
+
+    # Step 4: Check Kubernetes API Server Connectivity
+    - name: Check Kubernetes API Server Connectivity
+      run: kubectl version --request-timeout=32s
+
+    # Step 5: Deploy to Kubernetes
+    - name: Deploy to Kubernetes
+      run: kubectl apply -f k8s-deployment.yaml --validate=false
